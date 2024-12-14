@@ -1,11 +1,35 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:weather_app/additional_info_item.dart';
 import 'package:weather_app/hourly_forecast_item.dart';
+import 'package:weather_app/secrets.dart';
+import 'package:http/http.dart' as http;
 
-class WeatherScreen extends StatelessWidget {
+class WeatherScreen extends StatefulWidget {
   const WeatherScreen({super.key});
+
+  @override
+  State<WeatherScreen> createState() => _WeatherScreenState();
+}
+
+class _WeatherScreenState extends State<WeatherScreen> {
+  @override
+  void initState() {
+    super.initState();
+    getCurrentWeather();
+  }
+
+  Future getCurrentWeather() async {
+    //the cityname was in the api but we got it out in separate variable to clear my concept
+    String cityName = 'London';
+    //Uri stands for "uniform resource identifier" and URL stands for "Unified Resource Locater"
+    final res = await http.get(
+      Uri.parse(
+        'https://api.openweathermap.org/data/2.5/weather?q=$cityName&APPID=$openWeatherApiKey',
+      ),
+    );
+    print(res);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +50,7 @@ class WeatherScreen extends StatelessWidget {
         ],
       ),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -49,7 +73,7 @@ class WeatherScreen extends StatelessWidget {
                       child: Column(
                         children: [
                           Text(
-                            '300°F',
+                            '300°K ',
                             style: TextStyle(
                               fontSize: 32,
                               fontWeight: FontWeight.bold,
@@ -102,11 +126,31 @@ class WeatherScreen extends StatelessWidget {
               //Row to display weather cards
               child: Row(
                 children: [
-                  HourlyForecastItems(),
-                  HourlyForecastItems(),
-                  HourlyForecastItems(),
-                  HourlyForecastItems(),
-                  HourlyForecastItems(),
+                  HourlyForecastItems(
+                    time: '5:00',
+                    icon: Icons.cloud,
+                    value: '200.12',
+                  ),
+                  HourlyForecastItems(
+                    time: '5:00',
+                    icon: Icons.cloud,
+                    value: '200.12',
+                  ),
+                  HourlyForecastItems(
+                    time: '5:00',
+                    icon: Icons.cloud,
+                    value: '200.12',
+                  ),
+                  HourlyForecastItems(
+                    time: '5:00',
+                    icon: Icons.cloud,
+                    value: '200.12',
+                  ),
+                  HourlyForecastItems(
+                    time: '5:00',
+                    icon: Icons.cloud,
+                    value: '200.12',
+                  ),
                 ],
               ),
             ),
@@ -125,12 +169,24 @@ class WeatherScreen extends StatelessWidget {
             const SizedBox(
               height: 16,
             ),
-            Row(
+            const Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                AdditionalInfoItem(),
-                AdditionalInfoItem(),
-                AdditionalInfoItem(),
+                AdditionalInfoItem(
+                  icon: Icons.water_drop,
+                  label: 'Humidity',
+                  value: '91',
+                ),
+                AdditionalInfoItem(
+                  icon: Icons.air,
+                  label: 'Wind Speed',
+                  value: '7.5',
+                ),
+                AdditionalInfoItem(
+                  icon: Icons.beach_access,
+                  label: 'Pressure',
+                  value: '1000',
+                ),
               ],
             )
           ],

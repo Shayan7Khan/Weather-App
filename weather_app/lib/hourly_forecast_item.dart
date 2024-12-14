@@ -2,7 +2,12 @@ import 'package:flutter/material.dart';
 
 //creating a separate class for them as they are being reused again.
 class HourlyForecastItems extends StatelessWidget {
-  const HourlyForecastItems({super.key});
+  final String time;
+  final IconData icon;
+  final String value;
+
+  const HourlyForecastItems(
+      {super.key, required this.time, required this.icon, required this.value});
 
   @override
   Widget build(BuildContext context) {
@@ -12,22 +17,22 @@ class HourlyForecastItems extends StatelessWidget {
         width: 100,
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(16)),
-        child: const Column(
+        child: Column(
           children: [
             Text(
-              '5:00',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              time,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
-            SizedBox(
+            const SizedBox(
               height: 8,
             ),
             Icon(
-              Icons.cloud,
+              icon,
               size: 32,
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
-              '200.12',
+              value,
             ),
           ],
         ),
