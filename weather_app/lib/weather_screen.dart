@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:weather_app/additional_info_item.dart';
@@ -13,6 +14,9 @@ class WeatherScreen extends StatefulWidget {
 }
 
 class _WeatherScreenState extends State<WeatherScreen> {
+  //we are using late because we are assigning the value to this variable late
+  double temp = 0;
+
   @override
   void initState() {
     super.initState();
@@ -20,15 +24,28 @@ class _WeatherScreenState extends State<WeatherScreen> {
   }
 
   Future getCurrentWeather() async {
-    //the cityname was in the api but we got it out in separate variable to clear my concept
-    String cityName = 'London';
-    //Uri stands for "uniform resource identifier" and URL stands for "Unified Resource Locater"
-    final res = await http.get(
-      Uri.parse(
-        'https://api.openweathermap.org/data/2.5/weather?q=$cityName&APPID=$openWeatherApiKey',
-      ),
-    );
-    print(res);
+    try {
+      //the cityname was in the api but we got it out in separate variable to clear my concept
+      String cityName = 'London';
+      //Uri stands for "uniform resource identifier" and URL stands for "Unified Resource Locater"
+      final res = await http.get(
+        Uri.parse(
+          'https://api.openweathermap.org/data/2.5/forecast?q=$cityName&APPID=$openWeatherApiKey',
+        ),
+      );
+      //jsonDecode converts the data from api into list/maps which we can use to show and res.body mean accessing just the data present in the body of the api not the header and anything else.
+      final data = jsonDecode(res.body);
+
+      if (data['cod'] != '200') {
+        throw 'An unexpected error occurred';
+      }
+
+      setState(() {
+        temp = (data['list'][0]['main']['temp']);
+      });
+    } catch (e) {
+      throw e.toString();
+    }
   }
 
   @override
@@ -42,9 +59,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
         ),
         actions: [
           IconButton(
-            onPressed: () {
-              print('refresh');
-            },
+            onPressed: () {},
             icon: const Icon(Icons.refresh),
           ),
         ],
@@ -68,28 +83,28 @@ class _WeatherScreenState extends State<WeatherScreen> {
                   child: BackdropFilter(
                     //blurs the background
                     filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
-                    child: const Padding(
-                      padding: EdgeInsets.all(16.0),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
                       child: Column(
                         children: [
                           Text(
-                            '300°K ',
-                            style: TextStyle(
+                            '$temp K ',
+                            style: const TextStyle(
                               fontSize: 32,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 16,
                           ),
-                          Icon(
+                          const Icon(
                             Icons.cloud,
                             size: 64,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 16,
                           ),
-                          Text(
+                          const Text(
                             'Rain',
                             style: TextStyle(fontSize: 20),
                           ),
