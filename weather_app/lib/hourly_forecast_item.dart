@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 class HourlyForecastItems extends StatelessWidget {
   final String time;
   final IconData icon;
-  final String value;
+  final String temp;
 
   const HourlyForecastItems(
-      {super.key, required this.time, required this.icon, required this.value});
+      {super.key, required this.time, required this.icon, required this.temp});
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +22,11 @@ class HourlyForecastItems extends StatelessWidget {
             Text(
               time,
               style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              //restricting this text to just one line because our listview builder is given 120 height and if the text wants more space or exceeds this height it will give error
+              maxLines: 1,
+
+              //this gives us that '...' after the text limited to one line to tell that it includes more text.
+              overflow: TextOverflow.ellipsis,
             ),
             const SizedBox(
               height: 8,
@@ -32,7 +37,7 @@ class HourlyForecastItems extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              value,
+              temp,
             ),
           ],
         ),

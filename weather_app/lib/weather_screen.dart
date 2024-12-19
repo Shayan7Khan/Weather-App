@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:weather_app/additional_info_item.dart';
 import 'package:weather_app/hourly_forecast_item.dart';
 import 'package:weather_app/secrets.dart';
@@ -158,39 +159,64 @@ class _WeatherScreenState extends State<WeatherScreen> {
                   height: 16,
                 ),
 
-                //to make the row scrollable
-                const SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
+                // //to make the row scrollable
+                // SingleChildScrollView(
+                //   scrollDirection: Axis.horizontal,
 
-                  //Row to display weather cards
-                  child: Row(
-                    children: [
-                      HourlyForecastItems(
-                        time: '5:00',
-                        icon: Icons.cloud,
-                        value: '200.12',
-                      ),
-                      HourlyForecastItems(
-                        time: '5:00',
-                        icon: Icons.cloud,
-                        value: '200.12',
-                      ),
-                      HourlyForecastItems(
-                        time: '5:00',
-                        icon: Icons.cloud,
-                        value: '200.12',
-                      ),
-                      HourlyForecastItems(
-                        time: '5:00',
-                        icon: Icons.cloud,
-                        value: '200.12',
-                      ),
-                      HourlyForecastItems(
-                        time: '5:00',
-                        icon: Icons.cloud,
-                        value: '200.12',
-                      ),
-                    ],
+                //   //Row to display weather cards
+                //   child: Row(
+                //     children: [
+                //       //using for loop to iterate through the list and display the required data that we need
+                //       for (int i = 0; i < 38; i++)
+                //         HourlyForecastItems(
+                //           //below statement means that in the data go to list and as the loop is at i=0 so start from i+1 meaning that skip the first index in the list and from the next index get the 'dt'
+                //           time: data['list'][i + 1]['dt'].toString(),
+
+                //           //going to the list skipping the first index moving on to the next and checking if that is equals to clouds or rain then display the clouds icon otherwise display the sun icon
+                //           icon: data['list'][i + 1]['weather'][0]['main'] ==
+                //                       'Clouds' ||
+                //                   data['list'][i + 1]['weather'][0]['main'] ==
+                //                       'Rain'
+                //               ? Icons.cloud
+                //               : Icons.sunny,
+
+                //               //going to the list skipping the first index and from the next index getting the temperature and displaying it on the hourly forecast weather
+                //           value: data['list'][i + 1]['main']['temp'].toString(),
+                //         ),
+                //     ],
+                //   ),
+                // ),
+
+                //the above mentioned code is using for loop in which we are referring to the data in our api and from there through the loop we are getting our data for hourly forecast weather but it is building 39 widgets at the same time which is effecting our app's performance therefore we are using another approach below.
+
+                //using sized box because the listview builder just like the text takes up the whole screen so we are using sized box to restrict it on using just the height of 120.
+                SizedBox(
+                  height: 120,
+                  //listview.builder will build on demand, accepts item builder which requires a widget to be returned
+                  child: ListView.builder(
+                    //we gave the itemcount of 5 so that it knows how much on demand widget we need to build
+                    itemCount: 5,
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (context, index) {
+                      //storing the data into variables
+                      final hourlyForecast = data['list'][index + 1];
+                      final hourlyForecastSky =
+                          data['list'][index + 1]['weather'][0]['main'];
+
+                      //we are using the intl package of the dart to format our time so therefore we are parsing the text related to time that we are getting from the data and then storing it in the time variable.
+                      final time = DateTime.parse(hourlyForecast['dt_txt']);
+
+                      //returing the hourly forecast weather data
+                      return HourlyForecastItems(
+                        //here we are using the intl package provided by the dart to format the time in a way we want, in this case we want the time to be like 00(hours):00(minutes) so therefore we used the .Hm (hour,minutes) and passed the time in which our data is stored. in this way the text from the api is parsed and stored in the time variable and here it is formatted into hours and minutes format.
+                        time: DateFormat.Hm().format(time),
+                        icon: hourlyForecastSky == 'Clouds' ||
+                                hourlyForecastSky == 'Rain'
+                            ? Icons.cloud
+                            : Icons.sunny,
+                        temp: hourlyForecast['main']['temp'].toString(),
+                      );
+                    },
                   ),
                 ),
 
