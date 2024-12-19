@@ -49,7 +49,9 @@ class _WeatherScreenState extends State<WeatherScreen> {
         ),
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              setState(() {});
+            },
             icon: const Icon(Icons.refresh),
           ),
         ],
@@ -208,8 +210,8 @@ class _WeatherScreenState extends State<WeatherScreen> {
 
                       //returing the hourly forecast weather data
                       return HourlyForecastItems(
-                        //here we are using the intl package provided by the dart to format the time in a way we want, in this case we want the time to be like 00(hours):00(minutes) so therefore we used the .Hm (hour,minutes) and passed the time in which our data is stored. in this way the text from the api is parsed and stored in the time variable and here it is formatted into hours and minutes format.
-                        time: DateFormat.Hm().format(time),
+                        //here we are using the intl package provided by the dart to format the time in a way we want, in this case we want the time to be like 00(hours):00(minutes) so therefore we used the .Hm (hour,minutes) and passed the time in which our data is stored. in this way the text from the api is parsed and stored in the time variable and here it is formatted into hours and minutes format, however i am using the 'j' which shows the time in AM and PM.
+                        time: DateFormat.j().format(time),
                         icon: hourlyForecastSky == 'Clouds' ||
                                 hourlyForecastSky == 'Rain'
                             ? Icons.cloud
